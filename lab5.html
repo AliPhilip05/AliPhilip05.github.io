@@ -1,8 +1,7 @@
-<html>
-<body style="background-color: rgb(154, 223, 154);">
-</body>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+ <head>
 
      <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -14,62 +13,124 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
-
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Lab 5</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="https://github.com/AliPhilip05/AliPhilip05.github.io/blob/dda70711441c963b857cde3057f6195fd34b0e36/index.html">Lab 1</a></li>
-            <li><a class="dropdown-item" href="index.html">Lab 2</a></li>
-            <li><a class="dropdown-item" href="lab3.html">Lab 3</a></li>
-             <li><a class="dropdown-item" href="lab4.html">Lab 4</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
 </head>
 
+<body style="background-color: rgb(154, 223, 154);">
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Lab 5</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Previous Labs</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="https://github.com/AliPhilip05/AliPhilip05.github.io/blob/dda70711441c963b857cde3057f6195fd34b0e36/index.html">Lab 1</a></li>
+              <li><a class="dropdown-item" href="index.html">Lab 2</a></li>
+              <li><a class="dropdown-item" href="lab3.html">Lab 3</a></li>
+              <li><a class="dropdown-item" href="lab4.html">Lab 4</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
   <header class="bg-success text-white text-center py-5 mb-4">
     <div class="container">
-      <!-- Title -->
       <h1 class="display-4 fw-bold">Get Rich Quick 101</h1>
-      <!-- Subtitle -->
       <p class="lead">Lab 5</p>
     </div>
-
-    
-
-
-<button onclick="changeText();">Sign Up</button>
-<span id="output">replace me</span>
-<input id="textbox" type="text" />
-
   </header>
 
-<script>
-    function changeText() {
-	var span = document.getElementById("output");
-	var textBox = document.getElementById("textbox");
-	 textbox.style.color = "red"; }
-</script>
-<body>
+
+  <div class="container my-5">
+    <div class="row">
+      <div class="col-12 mb-5">
+        <h1 class="text-center mb-3">Mission Statement</h1>
+        <p class="lead text-center">
+          Our mission is to empower individuals and families to achieve lasting financial security through personalized guidance, transparent advice, and long-term planning.
+        </p>
+      </div>
+
+      <div class="col-12 text-center mb-5">
+        <img src="audit.png" alt="My Picture" class="img-fluid rounded-circle shadow" style="max-width: 300px;">
+        <p class="mt-3 text-muted">What are you doing with your money?</p>
+      </div>
+
+      <div class="col-12">
+        <div class="p-4 bg-white shadow rounded">
+          <h2 class="text-center mb-4">Sign Up</h2>
+
+          <div class="mb-3">
+            <label for="name" class="form-label">Full Name</label>
+            <input id="name" class="form-control" type="text" placeholder="Enter your name">
+          </div>
+
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input id="email" class="form-control" type="text" placeholder="Enter your email">
+          </div>
+
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input id="password" class="form-control" type="text" placeholder="Enter your password">
+          </div>
+
+          <div class="text-center">
+            <button onclick="SignUp()" class="btn btn-success">Sign Up</button>
+          </div>
+
+          <p class="text-center mt-4 fw-bold" id="output">Please fill out your details above.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    function SignUp() {
+  
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+     
+      if (!name || !email || !password) {
+        output.textContent = " Registration Failed: All fields must be filled!";
+        return;
+      }
 
 
+      if (!(password.includes("!") || password.includes("?"))) {
+        output.textContent = " Registration Failed: Password must include '!' or '?'";
+        return;
+      }
 
 
+      const user = {
+        name: name,
+        email: email,
+        password: "*".repeat(password.length) 
+      };
+
+
+      alert (
+         " Registration Successful!\n" +
+          "Name: " + user.name + "\n" +
+          "Email: " + user.email + "\n" +
+          "Password: " + user.password
+        );
+
+output.textContent = "Registration Successful!";
+document.getElementById("name").value = "";
+document.getElementById("email").value = "";
+document.getElementById("password").value = "";
+    }
+  </script>
 </body>
+</html>
