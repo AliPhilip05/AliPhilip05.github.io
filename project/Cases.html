@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<title>Cases</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding-bottom: 50px;
+}
+
+/* NAVIGATION */
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+  position: relative;
+}
+.topnav #myLinks { display: none; }
+.topnav a {
+  color: white;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  display: block;
+}
+.topnav a.icon {
+  background: black;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.topnav a:hover { background-color: #ddd; color: black; }
+.active { background-color: #b73232; color: white; }
+
+/* Search bar */
+.search-container {
+  max-width: 900px;
+  margin: 30px auto 10px auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 10px;
+}
+.search-bar {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.search-button {
+  padding: 10px 20px;
+  background: #f03528;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Results header */
+.page-header {
+  max-width: 900px;
+  margin: 20px auto 10px auto;
+  padding: 0 20px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #b73232;
+}
+
+/* Case list */
+.results-wrapper {
+  max-width: 900px;
+  margin: 10px auto;
+  padding: 0 20px;
+}
+.case-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #ccc;
+}
+.case-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.case-meta {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 6px;
+}
+.case-info {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 8px;
+}
+.case-item a {
+  color: #b73232;
+  text-decoration: none;
+  font-weight: bold;
+}
+.case-item a:hover {
+  text-decoration: underline;
+}
+
+#loadMore {
+  padding: 10px 20px;
+  background: #b73232;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: block;
+  margin: 30px auto;
+}
+</style>
+</head>
+
+<body onload="loadCases(true)">
+
+<!-- NAV -->
+<div class="topnav">
+  <a href="main.html" class="active">Home Page</a>
+
+ <div id="myLinks">
+    <a href="Cases.html">Latest Ruilings</a>
+    <a href="api.html">Api Info</a>
+    <a href="Search.html">Search a Case</a>
+  </div>
+
+  <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+
+<!-- SEARCH BAR -->
+<div class="search-container">
+  <input type="text" id="searchBar" class="search-bar" placeholder="Search cases..." />
+  <button class="search-button" onclick="goToSearch()">Search</button>
+</div>
+
+<!-- HEADER -->
+<div class="page-header">Cases</div>
+
+<!-- RESULTS -->
+<div class="results-wrapper">
+  <ul id="caseList" style="padding:0; list-style:none;"></ul>
+  <button id="loadMore" onclick="loadCases()">Load More</button>
+</div>
+
+<script>
+const TOKEN = "fcaa6953ce0203667acef90595b10a9d9d2ea6cc";
+let nextPageUrl = null;
+let currentQuery = "";
+
+/* Mobile Menu */
+function toggleMenu() {
+  const x = document.getElementById("myLinks");
+  x.style.display = x.style.display === "block" ? "none" : "block";
+}
+
+/* Load Cases */
+async function loadCases(reset) {
+  const caseList = document.getElementById("caseList");
+
+  if (reset) {
+    caseList.innerHTML = "";
+    nextPageUrl = null;
+    currentQuery = document.getElementById("searchBar").value.trim() || "*";
+  }
+
+  const url =
+    nextPageUrl ||
+    `https://www.courtlistener.com/api/rest/v4/clusters/?search=${encodeURIComponent(currentQuery)}&page_size=10`;
+
+  try {
+    const response = await fetch(url, {
+      headers: { "Authorization": `Token ${TOKEN}` }
+    });
+    const data = await response.json();
+    nextPageUrl = data.next;
+
+    if (!data.results || data.results.length === 0) {
+      if (reset) caseList.innerHTML = "<li>No results found.</li>";
+      return;
+    }
+
+    for (const c of data.results) {
+      let docket = "N/A", courtName = "N/A";
+
+      if (c.latest_opinion) {
+        try {
+          const opRes = await fetch(
+            `https://www.courtlistener.com/api/rest/v4/opinions/${c.latest_opinion}/`,
+            { headers: { "Authorization": `Token ${TOKEN}` } }
+          );
+          const opData = await opRes.json();
+          docket = opData.docket_number || "N/A";
+          courtName = opData.court?.name || "N/A";
+        } catch {}
+      }
+
+      const li = document.createElement("li");
+      li.className = "case-item";
+
+      li.innerHTML = `
+        <div class="case-title">${c.case_name}</div>
+        <div class="case-meta">
+          Filed: ${new Date(c.date_created).toLocaleDateString()} |
+          Court: ${courtName} |
+          Docket: ${docket}
+        </div>
+        <div class="case-info">
+          Nature of Suit: ${c.nature_of_suit || "N/A"}<br>
+          Docket ID: ${c.docket_id || "N/A"}
+        </div>
+        <a href="https://www.courtlistener.com${c.absolute_url}" target="_blank">View Case</a>
+      `;
+
+      caseList.appendChild(li);
+    }
+
+    const loadMoreBtn = document.getElementById("loadMore");
+    if (!nextPageUrl) {
+      loadMoreBtn.disabled = true;
+      loadMoreBtn.textContent = "No more results";
+    } else {
+      loadMoreBtn.disabled = false;
+      loadMoreBtn.textContent = "Load More";
+    }
+
+  } catch (error) {
+    caseList.innerHTML = "<li>Error loading cases.</li>";
+    console.error(error);
+  }
+}
+
+function goToSearch() {
+  const q = document.getElementById("searchBar").value.trim();
+  if (q) window.location.href = `search.html?q=${encodeURIComponent(q)}`;
+}
+</script>
+
+</body>
+</html>

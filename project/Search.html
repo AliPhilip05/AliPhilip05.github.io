@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<title>CourtListener Case Search</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding-bottom: 50px;
+}
+
+/* Top Navigation */
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+  position: relative;
+}
+.topnav #myLinks { display: none; }
+.topnav a {
+  color: white;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  display: block;
+}
+.topnav a.icon {
+  background: black;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.topnav a:hover { background-color: #ddd; color: black; }
+.active { background-color: #b73232; color: white; }
+
+/* Search Header (simple, no box) */
+.search-section {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+.search-title {
+  font-size: 28px;
+  font-weight: bold;
+  color: #b73232;
+}
+.search-sub {
+  color: #444;
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+/* Search Bar Layout */
+.search-container {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  margin-bottom: 5px;
+}
+.search-bar {
+  width: 350px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.search-button {
+  padding: 10px 20px;
+  background: #f03528;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Results Section (flowing layout, no boxes) */
+.results-wrapper {
+  max-width: 900px;
+  margin: 10px auto;
+  padding: 0 20px;
+}
+.case-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #ccc;
+}
+.case-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  color: #222;
+}
+.case-meta {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+.case-snippet {
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: #333;
+}
+.case-item a {
+  color: #b73232;
+  text-decoration: none;
+  font-weight: bold;
+}
+.case-item a:hover { text-decoration: underline; }
+
+#loadMore {
+  padding: 10px 20px;
+  background: #b73232;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: block;
+  margin: 30px auto;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+<div class="topnav">
+  <a href="main.html" class="active">Home Page</a>
+    <div id="myLinks">
+    <a href="Casess.html">Latest Ruilings</a>
+    <a href="api.html">Api Info</a>
+    <a href="Search.html">Search a Case</a>
+  </div>
+
+  <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+
+<!-- SEARCH HEADER SECTION -->
+<div class="search-section">
+  <div class="search-title">Case Search</div>
+  <div class="search-sub">Search through federal and state court opinions in the CourtListener database.</div>
+
+  <div class="search-container">
+    <input type="text" id="searchBar" class="search-bar" placeholder="Start typing a keyword...">
+    <button class="search-button" onclick="loadCases(true)">Search</button>
+  </div>
+</div>
+
+<!-- RESULTS SECTION -->
+<div class="results-wrapper">
+  <ul id="caseList" style="padding:0; list-style:none;"></ul>
+  <button id="loadMore" onclick="loadCases()">Load More</button>
+</div>
+
+<script>
+const TOKEN = 'fcaa6953ce0203667acef90595b10a9d9d2ea6cc';
+let nextPageUrl = null;
+let currentQuery = "";
+
+const caseList = document.getElementById('caseList');
+const loadMoreButton = document.getElementById('loadMore');
+const searchBar = document.getElementById('searchBar');
+
+/* Mobile Menu */
+function toggleMenu() {
+  const x = document.getElementById("myLinks");
+  x.style.display = x.style.display === "block" ? "none" : "block";
+}
+
+/* Format Dates */
+function formatDate(dateStr) {
+  if (!dateStr) return 'Unknown';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString(undefined, {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+}
+
+/* Render flowing case items */
+function renderCases(cases) {
+  cases.forEach(c => {
+    const li = document.createElement('li');
+    li.className = "case-item";
+
+    li.innerHTML = `
+      <div class="case-title">${c.caseName || "Untitled Case"}</div>
+      <div class="case-meta">
+        Filed: ${formatDate(c.dateFiled)} |
+        Docket: ${c.docketNumber || "N/A"} |
+        Citation: ${c.court_citation_string || "None"}
+      </div>
+      <div class="case-snippet">${c.snippet || "No preview available."}</div>
+      <a href="https://www.courtlistener.com${c.absolute_url}" target="_blank">View Case</a>
+    `;
+
+    caseList.appendChild(li);
+  });
+}
+
+/* Fetch API */
+function fetchCases(query, url, callback) {
+  const apiUrl =
+    url ||
+    "https://www.courtlistener.com/api/rest/v4/search/?q=" +
+    encodeURIComponent(query) +
+    "&type=o&page_size=10";
+
+  fetch(apiUrl, {
+    headers: { "Authorization": `Token ${TOKEN}` }
+  })
+  .then(res => res.json())
+  .then(data => {
+    nextPageUrl = data.next;
+    callback(data.results);
+  });
+}
+
+/* Load Cases */
+function loadCases(reset) {
+  if (reset) {
+    caseList.innerHTML = "";
+    nextPageUrl = null;
+  }
+
+  currentQuery = searchBar.value.trim() || "*";
+
+  loadMoreButton.disabled = true;
+  loadMoreButton.textContent = "Loading...";
+
+  fetchCases(currentQuery, nextPageUrl, results => {
+    renderCases(results);
+
+    if (!nextPageUrl) {
+      loadMoreButton.disabled = true;
+      loadMoreButton.textContent = "No more results";
+    } else {
+      loadMoreButton.disabled = false;
+      loadMoreButton.textContent = "Load More";
+    }
+  });
+}
+
+/* Load initial ?q= query */
+const urlParams = new URLSearchParams(window.location.search);
+const initialQuery = urlParams.get('q') || '';
+searchBar.value = initialQuery;
+currentQuery = initialQuery;
+
+if (initialQuery) loadCases(true);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding-bottom: 60px;
+}
+
+/* NAVBAR */
+.topnav {
+  overflow: hidden;
+  background-color: #333;
+  position: relative;
+}
+.topnav #myLinks { display: none; }
+.topnav a {
+  color: white;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  display: block;
+}
+.topnav a.icon {
+  background: black;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.topnav a:hover { background-color: #ddd; color: black; }
+.active { background-color: #b73232; color: white; }
+
+/* COURTS GRID */
+.courts-wrapper {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+.courts-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+.court-card {
+  background: #fff;
+  flex: 1 1 300px; /* lets cards grow/shrink naturally */
+  max-width: 300px;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: 0.2s;
+}
+.court-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.court-card h5 {
+  margin-bottom: 10px;
+  color: #b73232;
+}
+.court-card p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+.court-card a {
+  color: #f03528;
+  font-weight: bold;
+  text-decoration: none;
+}
+.court-card a:hover {
+  text-decoration: underline;
+}
+
+/* JUDGE IMAGES */
+.judge-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.judge-container div {
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+}
+.judge-container img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-bottom: 2px;
+  transition: 0.2s;
+}
+.judge-container img:hover {
+  opacity: 0.8;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="topnav">
+  <a href="main.html" class="active">Home Page</a>
+
+    <div id="myLinks">
+    <a href="Cases.html">Latest Ruilings</a>
+    <a href="api.html">Api Info</a>
+    <a href="Search.html">Search a Case</a>
+  </div>
+
+  <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
+    <i class="fa fa-bars"></i>
+  </a>
+</div>
+
+<!-- COURTS GRID -->
+<div class="courts-wrapper">
+  <h2 style="text-align:center; margin-bottom:20px;">Courts</h2>
+  <div id="cases" class="courts-row"></div>
+</div>
+
+<script>
+const TOKEN = "fcaa6953ce0203667acef90595b10a9d9d2ea6cc";
+const COURTS_API = "https://www.courtlistener.com/api/rest/v4/courts/?page_size=9";
+const JUDGE_PLACEHOLDER = "https://via.placeholder.com/80";
+
+async function loadCourts() {
+    const container = document.getElementById("cases");
+    container.innerHTML = "";
+
+    try {
+        const response = await fetch(COURTS_API, {
+            headers: { "Authorization": `Token ${TOKEN}` }
+        });
+        const data = await response.json();
+        const courts = data.results;
+
+        for (const court of courts) {
+            const opinionsRes = await fetch(`https://www.courtlistener.com/api/rest/v4/opinions/?court=${court.id}&page_size=3`, {
+                headers: { "Authorization": `Token ${TOKEN}` }
+            });
+            const opinionsData = await opinionsRes.json();
+            const judges = [...new Set(opinionsData.results.map(op => op.author_str).filter(Boolean))];
+
+            const courtCard = document.createElement("div");
+            courtCard.className = "court-card";
+
+            const judgesHTML = judges.map(j => `
+                <div>
+                  <img src="${JUDGE_PLACEHOLDER}" alt="${j}">
+                  <div>${j}</div>
+                </div>
+            `).join("");
+
+            courtCard.innerHTML = `
+                <h5>${court.full_name || court.name}</h5>
+                <p>
+                  Abbreviation: ${court.short_name || "N/A"}<br>
+                  Level: ${court.position || "N/A"}<br>
+                  Jurisdiction: ${court.jurisdiction || "N/A"}<br>
+                  Start Date: ${court.start_date || "N/A"}
+                </p>
+          
+                <a href="${court.url}" target="_blank">View Court</a>
+            `;
+
+            container.appendChild(courtCard);
+        }
+    } catch (err) {
+        container.innerHTML = "<p class='text-danger' style='text-align:center;'>Error loading courts.</p>";
+        console.error(err);
+    }
+}
+
+loadCourts();
+
+function toggleMenu() {
+  let x = document.getElementById("myLinks");
+  x.style.display = (x.style.display === "block") ? "none" : "block";
+}
+</script>
+
+</body>
+</html>

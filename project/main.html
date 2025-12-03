@@ -1,31 +1,37 @@
-
-
+<!DOCTYPE html>
 <html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <style>
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #222;
+}
 
-       .container {
-        display: flex;
-        gap: 20px; 
-    }
+.section-desc {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  color: #333;
+}
 
-    .column {
-        flex: 1;
-        background-color: rgb(168, 168, 246); 
-        padding: 15px;
-    }
-
-    .topnav {
+.topnav {
   overflow: hidden;
   background-color: #333;
   position: relative;
 }
 
-/* Hide the links inside the navigation menu (except for logo/home) */
 .topnav #myLinks {
   display: none;
 }
 
-/* Style navigation menu links */
 .topnav a {
   color: white;
   padding: 14px 16px;
@@ -34,95 +40,192 @@
   display: block;
 }
 
-/* Style the hamburger menu */
 .topnav a.icon {
   background: black;
-  display: block;
   position: absolute;
   right: 0;
   top: 0;
 }
 
-/* Add a grey background color on mouse-over */
 .topnav a:hover {
   background-color: #ddd;
   color: black;
 }
 
-/* Style the active link (or home/logo) */
 .active {
-  background-color: #04AA6D;
+  background-color: #b73232;
   color: white;
 }
 
+
+.section-box {
+  background: rgb(242, 148, 119);
+  border-radius: 10px;
+  padding: 25px;
+  text-align: center;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  min-height: 150px;
+}
+
+#signupbar {
+  background: white;
+  padding: 20px;
+  margin-top: 15px;
+  margin-bottom: 25px;
+  font-size: 1.25rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.10);
+  text-align: center;
+}
+
+footer {
+  margin-top: 30px;
+  padding: 25px;
+  text-align: center;
+  background: #222;
+  color: white;
+}
+
+.search-section {
+
+   margin-top: 30px;
+  padding: 45px;
+  text-align: center;
+  background: #fffcfc;
+  color: white;
+}
+
+img:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.about-box {
+  background: white;
+  border-radius: 12px;
+  padding: 35px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  border: 2px solid #f29477; /* matches your theme color */
+}
+
+.about-box h2 {
+  margin-bottom: 15px;
+  color: #333;
+  font-weight: 700;
+}
+
+.about-box p {
+  color: #444;
+  font-size: 1.1rem;
+  line-height: 1.6rem;
+}
+
 </style>
-<head>
-
-     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-
-    
 </head>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<body>
 
-<!-- Top Navigation Menu -->
 <div class="topnav">
-  <a href="#home" class="active">Logo</a>
-  <!-- Navigation links (hidden by default) -->
+  <a href="main.html" class="active">Home Page</a>
+
   <div id="myLinks">
-    <a href="#news">News</a>
-    <a href="#contact">Contact</a>
-    <a href="#about">About</a>
+    <a href="Cases.html">Latest Ruilings</a>
+    <a href="api.html">Api Info</a>
+    <a href="Search.html">Search a Case</a>
   </div>
-  <!-- "Hamburger menu" / "Bar icon" to toggle the navigation links -->
-  <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+
+  <a href="javascript:void(0);" class="icon" onclick="toggleMenu()">
     <i class="fa fa-bars"></i>
   </a>
 </div>
 
-<body>
 
-    <div class="container">
-        <div class="column">
-            <body>
-                <p> Sign Up </p>
-            </body>
-        </div>
-        <div class="column">
-            <body>
-                <p> Search </p>
-            </body>
-        </div>
-        <div class="column">
-            <body>
-                <p> Support Page </p>
 
-            </body>
-        </div>
+<div class="about-box">
+    <h2>About Us</h2>
+    <p>
+        Our platform provides convenient access to judges, courts, case records, and attorney
+        information from across the United States. Designed for students, researchers, and the
+        public, this website compiles legal data into a simple, organized, and searchable format.
+        Whether you're studying law, verifying information, or exploring court activity, our goal
+        is to make navigating legal resources easier and more intuitive.
+    </p>
+</div>
+
+
+<div class="container">
+  <div class="row g-4">
+
+
+
+     <div class="col-md-3">
+      <div class="section-box">
+  <div class="section-title">Api Info </div>
+  <div class="section-desc">Browse The Api Information and how this website was made.</div>
+  <nav></nav>
+  <a href="api.html">
+    <img src="images/courts.png" alt="Court" style="max-width:100%; height:auto; margin-top:10px; border-radius:6px; cursor:pointer;">
+  </a>
+</div>
+    
     </div>
+
+    <div class="col-md-3">
+      <div class="section-box">
+        <div class="section-title">Courts</div>
+        <div class="section-desc">Search and browse federal and state judges.</div>
+         <a href="Courts.html">
+        <img src="images/gavel.png" alt="Gavel" style="max-width:100%; height:auto; margin-top:10px; border-radius:6px;">
+        </a>
+      </div>
     
+    </div>
+
+     <div class="col-md-3">
+      <div class="section-box">
+        <div class="section-title"> Cases </div>
+        <div class="section-desc">Look at the most recent cases and narrow down your searches.</div>
+        <a href="Cases.html">
+        <img src="images/Judges.png" alt="Judge" style="max-width:100%; height:auto; margin-top:10px; border-radius:6px;">
+        </a>
+      </div>
     
+    </div>
+
+    <div class="col-md-3">
+      <div class="section-box">
+        <div class="section-title"> Search </div>
+        <div class="section-desc">Search and browse cases more directly! Be specific in the name!</div>
+         <a href="Search.html">
+        <img src="images/lawyer.png" alt="Lawyer" style="max-width:100%; height:auto; margin-top:10px; border-radius:6px;">
+        </a>
+      </div>
+    
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <h3>Got A Question?</h3>
+  <p>Email: Ali.Philip@CourtListeners.com | Phone: (800) 888-2300 | Staten Island, NY </p>
+</footer>
+
+
+<script>
+function toggleMenu() {
+  let x = document.getElementById("myLinks");
+  x.style.display = (x.style.display === "block") ? "none" : "block";
+}
+</script>
+
 </body>
-
-
-<body>
-    <h> FAQ </h>
-<p>
-
-
-</p>
-</body>
-
 </html>
-
-
-        
