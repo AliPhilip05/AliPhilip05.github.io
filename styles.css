@@ -435,7 +435,7 @@ a {
 }
 .project-grid {
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-columns:repeat(2,minmax(0,1fr));
   gap:17px
 }
 .project-card {
@@ -542,6 +542,87 @@ a {
 .project-art-queue {
   gap:8px;
   background:#e7ede3
+}
+.project-art-astrolings {
+  background:#efeaf5
+}
+.project-art-astrolings img {
+  width:120px;
+  height:120px;
+  object-fit:contain
+}
+.prototype-status {
+  margin-top:auto;
+  padding-top:16px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  color:#725193;
+  font:10px var(--mono);
+  border-top:1px solid #e2e7e0
+}
+.prototype-dot {
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#8b48ff
+}
+.events-section {
+  padding-top:28px;
+  padding-bottom:72px;
+  border-top:1px solid var(--line)
+}
+.event-card {
+  display:grid;
+  grid-template-columns:155px minmax(0,1fr);
+  background:var(--white);
+  border:1px solid var(--line);
+  border-radius:3px
+}
+.event-date {
+  padding:30px 20px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  color:var(--mint);
+  background:var(--dark);
+  font:10px var(--mono);
+  text-align:center
+}
+.event-date strong {
+  color:var(--lime);
+  font:40px/1.3 var(--serif)
+}
+.event-duration {
+  margin-top:15px;
+  padding-top:13px;
+  border-top:1px solid rgba(216,230,220,.2)
+}
+.event-content {
+  padding:29px 32px
+}
+.event-content .eyebrow {
+  margin-top:0
+}
+.event-content h3 {
+  margin:0 0 13px;
+  font-size:25px;
+  line-height:1.25;
+  letter-spacing:-.035em
+}
+.event-content>p:not(.eyebrow) {
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.75
+}
+.event-content strong {
+  color:var(--ink-2)
+}
+.event-links {
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px 26px;
+  margin-top:20px
 }
 .queue-node {
   width:37px;
@@ -1086,13 +1167,6 @@ a {
   .project-grid {
     grid-template-columns:repeat(2,minmax(0,1fr))
   }
-  .project-card:last-child {
-    grid-column:1/-1;
-    min-height:360px
-  }
-  .project-card:last-child .project-art {
-    height:100px
-  }
   .research-layout {
     grid-template-columns:145px 1fr;
     gap:35px
@@ -1255,6 +1329,33 @@ a {
   }
   .card-links a {
     font-size:9px
+  }
+  .event-card {
+    grid-template-columns:1fr
+  }
+  .event-date {
+    padding:18px;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    text-align:left;
+    align-items:center;
+    gap:6px 18px
+  }
+  .event-date strong {
+    grid-column:1;
+    grid-row:2;
+    font-size:30px
+  }
+  .event-duration {
+    margin:0;
+    padding:0;
+    border:0
+  }
+  .event-content {
+    padding:22px
+  }
+  .event-content h3 {
+    font-size:22px
   }
   .crosslink {
     margin-bottom:47px;
